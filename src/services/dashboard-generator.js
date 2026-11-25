@@ -255,8 +255,10 @@ function isRealClassName(name) {
   // Tournaments, competitions, events, ceremonies, misc non-class terms
   if (/^(campeonato|copa\s|torneo|cuadrangular|competencia)\b/i.test(n)) return false;
   if (/^marat[oó]n\b/i.test(n)) return false;
-  if (/\bhalloween\b/i.test(n)) return false;
+  if (/hall[ao]w[e]?en{1,2}\b/i.test(n)) return false;
   if (/^americano\s+(halloween|mixto)\b/i.test(n)) return false;
+  if (/^senior\s+entrenamiento\b/i.test(n)) return false;
+  if (/^juegos?\s+(t[íi]picos?|populares?)\b/i.test(n)) return false;
   if (/^interclubes$/i.test(n)) return false;
   if (/^(mantencion(es)?|mantenci[oó]n)\b/i.test(n)) return false;
   if (/^runners?$/i.test(n)) return false;
@@ -266,7 +268,6 @@ function isRealClassName(name) {
   if (/^master\s+class\b/i.test(n)) return false;
   if (/^(cerrado|montaje|premiaci[oó]n|premiacion)\b/i.test(n)) return false;
   if (/^(esquinazo|preparaci[oó]n\s+esquinazo)\b/i.test(n)) return false;
-  if (/^juegos?\s+(t[íi]picos?|populares?)\b/i.test(n)) return false;
   if (/^(a\.?a\.?i\.?i\.?|n\.?a\.?)$/i.test(n)) return false;
   // Activity keywords → real class
   if (_CLASS_KEYWORDS.test(n)) return true;
@@ -3509,6 +3510,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010e1a;font-family:
 #pres.light .kpi-pres-card{background:rgba(0,74,135,.07);border-color:rgba(0,74,135,.18);}
 #pres.light .chip-ret{background:rgba(0,0,0,.07);color:#2a5080;}
 #pres.light .title-h1,#pres.light .sec-title{color:#fff;}
+#pres.light .rank-val{color:#1a2c3d;}
+#pres.light .occ-h{color:#1b5e20;}
+#pres.light .occ-m{color:#bf360c;}
+#pres.light .occ-l{color:#b71c1c;}
+#pres.light .range-cmp-pct{color:#1a2c3d;}
+#pres.light .kpi-pres-val{color:#004a87 !important;}
+#pres.light .kpi-pres-icon{opacity:.85;}
 /* SLIDE HEADER */
 .slide-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 48px 12px;flex-shrink:0;border-bottom:2px solid rgba(246,201,0,.35);}
 .hdr-title{font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:800;color:#f6c900;}
@@ -3685,6 +3693,13 @@ function toggleLightMode(){
   const pres=document.getElementById('pres');
   const isLight=pres.classList.toggle('light');
   document.getElementById('lightBtn').textContent=isLight?'🌙 Modo oscuro':'☀️ Modo claro';
+  // Re-render any active chart slide with updated colors
+  const active=document.querySelector('.slide.active');
+  if(active&&active.dataset.chartType){
+    Object.values(presCharts).forEach(c=>{try{c.destroy();}catch(e){}});
+    presCharts={};
+    setTimeout(()=>renderChartOnSlide(active,slideData[currentSlide]),50);
+  }
 }
 
 /* ── SLIDE BUILDERS ── */
@@ -3700,8 +3715,8 @@ function buildMonthSlides(runIdx){
   const allActs=getAllActs(run);
   if(allActs.length>=3){
     const withCap=allActs.filter(a=>a.capacity>0);
-    s.push({type:'ranking',title:'🏆 Mayor Ocupación',sub:'Actividades con más inscriptos vs cupo',acts:[...withCap].sort((a,b)=>b.occupancyPct-a.occupancyPct).slice(0,8),metric:'pct'});
-    s.push({type:'ranking',title:'📉 Menor Ocupación',sub:'Actividades con potencial de crecimiento',acts:[...withCap].filter(a=>a.occupancyPct>0).sort((a,b)=>a.occupancyPct-b.occupancyPct).slice(0,8),metric:'pct'});
+    s.push({type:'ranking',title:'🏆 Mayor Ocupación %',sub:'Actividades con más inscriptos vs cupo',acts:[...withCap].sort((a,b)=>b.occupancyPct-a.occupancyPct).slice(0,8),metric:'pct'});
+    s.push({type:'ranking',title:'📉 Menor Ocupación %',sub:'Actividades con potencial de crecimiento',acts:[...withCap].filter(a=>a.occupancyPct>0).sort((a,b)=>a.occupancyPct-b.occupancyPct).slice(0,8),metric:'pct'});
     s.push({type:'ranking',title:'👥 Mayor Inscripción',sub:'Actividades con más inscritos',acts:[...allActs].sort((a,b)=>b.attendees-a.attendees).slice(0,8),metric:'att'});
     s.push({type:'ranking',title:'📊 Menor Inscripción',sub:'Actividades con menos inscritos',acts:[...allActs].filter(a=>a.attendees>0).sort((a,b)=>a.attendees-b.attendees).slice(0,8),metric:'att'});
   }
@@ -3829,7 +3844,7 @@ function renderClosing(s){
 
 /* ── CHART RENDERING ── */
 const TOOLTIP_OPTS={backgroundColor:'rgba(0,0,0,.9)',titleFont:{size:15,weight:'bold'},bodyFont:{size:13},padding:12,borderColor:'rgba(255,255,255,.2)',borderWidth:1};
-function gc(){return{grid:'rgba(255,255,255,.08)',tick:'#90caf9'};}
+function gc(){const l=document.getElementById('pres')&&document.getElementById('pres').classList.contains('light');return l?{grid:'rgba(0,0,0,.1)',tick:'#2a5080',text:'#1a2c3d',leg:'#2a5080'}:{grid:'rgba(255,255,255,.08)',tick:'#90caf9',text:'#fff',leg:'#90caf9'};}
 function renderChartOnSlide(slideEl,data){
   const type=slideEl.dataset.chartType,cid=slideEl.dataset.chartId;
   if(!type||!cid)return;
@@ -3845,7 +3860,7 @@ function renderChartOnSlide(slideEl,data){
     const col=sd.cat&&sd.cat.color;
     const bgA=labels.map((_,i)=>col?hex2rgb(col,.85):hex2rgb(items[i].color||'#1a7abf',.85));
     const bgC=labels.map((_,i)=>col?hex2rgb(col,.2):hex2rgb(items[i].color||'#1a7abf',.2));
-    presCharts[cid]=new Chart(canvas,{type:'bar',data:{labels,datasets:[{label:'Cupos',data:cap,backgroundColor:bgC,borderColor:bgA,borderWidth:1.5,borderRadius:4},{label:'Inscritos',data:att,backgroundColor:bgA,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:1200,easing:'easeOutQuart'},plugins:{legend:{position:'top',labels:{color:'#90caf9',font:{size:14},boxWidth:14}},tooltip:{...TOOLTIP_OPTS,callbacks:{afterLabel(ctx){if(ctx.datasetIndex===1)return'Ocupación: '+pct(occ[ctx.dataIndex]);return'';}}}},scales:{x:{beginAtZero:true,ticks:{color:cc.tick,font:{size:13}},grid:{color:cc.grid}},y:{ticks:{color:'#fff',font:{size:14}},grid:{display:false}}}}});
+    presCharts[cid]=new Chart(canvas,{type:'bar',data:{labels,datasets:[{label:'Cupos',data:cap,backgroundColor:bgC,borderColor:bgA,borderWidth:1.5,borderRadius:4},{label:'Inscritos',data:att,backgroundColor:bgA,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:1200,easing:'easeOutQuart'},plugins:{legend:{position:'top',labels:{color:cc.leg,font:{size:14},boxWidth:14}},tooltip:{...TOOLTIP_OPTS,callbacks:{afterLabel(ctx){if(ctx.datasetIndex===1)return'Ocupación: '+pct(occ[ctx.dataIndex]);return'';}}}},scales:{x:{beginAtZero:true,ticks:{color:cc.tick,font:{size:13}},grid:{color:cc.grid}},y:{ticks:{color:cc.text,font:{size:15}},grid:{display:false}}}}});
   } else if(type==='trend-att'||type==='trend-occ'){
     const runs=sd.runs||[],labels=runs.map(r=>r.label),isOcc=type==='trend-occ';
     const palette=['#1a7abf','#f6c900','#4caf50','#ce93d8','#ff9800','#f44336','#90caf9'];
@@ -3855,7 +3870,7 @@ function renderChartOnSlide(slideEl,data){
       responsive:true,maintainAspectRatio:false,
       animation:{duration:1200,easing:'easeOutQuart'},
       interaction:{mode:'index',intersect:false},
-      plugins:{legend:{position:'top',labels:{color:'#90caf9',font:{size:14},boxWidth:14}},tooltip:{...TOOLTIP_OPTS,callbacks:{label(ctx){return' '+ctx.dataset.label+': '+(isOcc?pct(ctx.parsed.y):num(ctx.parsed.y));}}}},
+      plugins:{legend:{position:'top',labels:{color:cc.leg,font:{size:14},boxWidth:14}},tooltip:{...TOOLTIP_OPTS,callbacks:{label(ctx){return' '+ctx.dataset.label+': '+(isOcc?pct(ctx.parsed.y):num(ctx.parsed.y));}}}},
       scales:{
         x:{ticks:{color:cc.tick,font:{size:13}},grid:{color:cc.grid}},
         y:{beginAtZero:true,max:isOcc?100:undefined,ticks:{color:cc.tick,font:{size:13},callback:isOcc?v=>v+'%':undefined},grid:{color:cc.grid}}
@@ -3873,7 +3888,7 @@ function renderChartOnSlide(slideEl,data){
       animation:{duration:1200,easing:'easeOutQuart'},
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{position:'top',labels:{color:'#90caf9',font:{size:14},boxWidth:14}},
+        legend:{position:'top',labels:{color:cc.leg,font:{size:14},boxWidth:14}},
         tooltip:{...TOOLTIP_OPTS,callbacks:{label(ctx){return' '+ctx.dataset.label+': '+(ctx.dataset.yAxisID==='y2'?pct(ctx.parsed.y):num(ctx.parsed.y));}}}
       },
       scales:{
