@@ -3629,7 +3629,7 @@ function startPresentation(){
   selFrom=Number(document.getElementById('selFrom').value);
   selTo=Number(document.getElementById('selTo').value);
   document.getElementById('selector').style.display='none';
-  document.getElementById('pres').style.display='';
+  document.getElementById('pres').style.display='block';
   buildAndRender();
 }
 function showSelector(){document.getElementById('pres').style.display='none';document.getElementById('selector').style.display='flex';if(autoPlay){autoPlay=false;clearInterval(autoTimer);document.getElementById('autoBtn').textContent='▶ Auto (7s)';}}
