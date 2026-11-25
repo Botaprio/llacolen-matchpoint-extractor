@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llacolén MatchPoint Estadísticas</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <img class="brand-logo" src="../assets/logo-llacolen.jpg" alt="Llacolén Campos Deportivos">
+      <div>
+        <p class="eyebrow">Campos Deportivos Llacolén</p>
+        <h1>Estadísticas MatchPoint</h1>
+        <p class="subtitle">Versión 18 · Inspector de horarios interactivo · Dashboard público.</p>
+      </div>
+      <div id="sessionBadge" class="badge badge-offline">Sin comprobar</div>
+    </header>
+
+    <main>
+      <section class="card connection-card">
+        <div>
+          <h2>1. Acceso a MatchPoint</h2>
+          <p>La contraseña se ingresa únicamente en Microsoft Edge y nunca se guarda en esta aplicación.</p>
+        </div>
+        <div class="button-row">
+          <button id="openSessionButton" class="button button-primary">Abrir MatchPoint</button>
+          <button id="checkSessionButton" class="button button-secondary">Comprobar acceso</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Rango de extracción</h2>
+        <div class="form-grid">
+          <label>
+            Fecha inicial
+            <input id="dateFrom" type="date">
+          </label>
+          <label>
+            Fecha final
+            <input id="dateTo" type="date">
+          </label>
+        </div>
+        <div class="parallel-settings">
+          <label for="concurrency">Pestañas simultáneas
+            <select id="concurrency">
+              <option value="1">1 · Secuencial</option><option value="2">2</option><option value="3">3</option>
+              <option value="4" selected>4 · Predeterminado</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              <option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+            </select>
+          </label>
+          <p>Cada pestaña recibe un día y toma el siguiente al terminar. Todos los resultados se reúnen en una sola extracción. Puedes elegir 1 pestaña si MatchPoint responde lentamente.</p>
+        </div>
+        <div class="button-row extraction-actions">
+          <button id="startButton" class="button button-primary" disabled>Iniciar extracción</button>
+          <button id="cancelButton" class="button button-danger" disabled>Cancelar</button>
+        </div>
+        <div class="quick-extraction">
+          <div>
+            <h3>Extracciones rápidas</h3>
+            <p>El rango manual se mantiene disponible arriba.</p>
+          </div>
+          <div class="quick-extraction-actions">
+            <label>Mes<input id="monthPicker" type="month"></label>
+            <button id="monthlyButton" class="button button-secondary" disabled>Extraer mes</button>
+            <button id="quickMonthlyButton" class="button button-primary" disabled>Extracción rápida (cifras)</button>
+            <button id="annualButton" class="button button-secondary" disabled>Extraer año actual</button>
+          </div>
+        </div>
+        <div class="multi-month-extraction">
+          <div>
+            <h3>Extraccción de período</h3>
+            <p>Procesa meses consecutivos en modo rápido (sólo cifras). Avanza al siguiente al completar cada uno.</p>
+          </div>
+          <div class="multi-month-actions">
+            <label>Desde<input id="monthFrom" type="month"></label>
+            <label>Hasta<input id="monthTo" type="month"></label>
+            <button id="multiMonthButton" class="button button-primary" disabled>Extraer período</button>
+            <button id="cancelMultiMonthButton" class="button button-danger" disabled>Cancelar período</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="progressCard" class="card progress-card" aria-live="polite">
+        <div class="progress-heading">
+          <div>
+            <h2>Progreso</h2>
+            <p id="progressMessage">Aún no hay una extracción en curso.</p>
+          </div>
+          <strong id="progressPercent">0%</strong>
+        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="workerProgress" class="worker-grid"></div>
+        <div class="metrics">
+          <div><span id="metricDays">0</span><small>Días</small></div>
+          <div><span id="metricViews">0</span><small>Cuadros</small></div>
+          <div><span id="metricEvents">0</span><small>Eventos</small></div>
+          <div><span id="metricParticipants">0</span><small>Inscritos</small></div>
+          <div><span id="metricWarnings">0</span><small>Alertas</small></div>
+        </div>
+      </section>
+
+      <section id="warningPanel" class="warning-panel hidden">
+        <strong>La extracción terminó con alertas.</strong>
+        <span>Abre «Analizar Nuevo» para revisar clases y días incompletos.</span>
+      </section>
+      <section id="analysisCard" class="card hidden">
+        <div class="section-heading"><div><h2>Análisis mensual</h2><p id="analysisLabel"></p></div><div class="button-row"><button id="analysisAuditButton" class="button button-primary">Analizar Nuevo</button><button id="closeAnalysisButton" class="button button-quiet">Cerrar</button></div></div>
+        <div id="analysisMetrics" class="metrics"></div>
+        <div class="analysis-layout"><div><h3>Actividades incluidas</h3><div id="activitySelector" class="activity-selector"></div></div><div><h3>Asistentes vs cupos por actividad</h3><canvas id="chartCanvas" width="760" height="360"></canvas><button id="downloadChartButton" class="button button-quiet">Descargar gráfico PNG</button></div></div>
+        <div class="button-row extraction-actions"><button id="analysisExcelButton" class="button button-secondary">Generar Excel oficiales</button><button id="analysisPdfButton" class="button button-secondary">Informe PDF</button><button id="analysisPptButton" class="button button-primary">Generar PowerPoint</button><button id="analysisScheduleButton" class="button button-quiet">Estructura Horaria</button></div>
+      </section>
+
+      <section id="auditCard" class="card hidden" aria-labelledby="auditTitle">
+        <div class="section-heading">
+          <div><p class="audit-eyebrow">Analizar Nuevo</p><h2 id="auditTitle">Revisión de clases</h2><p id="auditLabel"></p></div>
+          <div class="button-row"><button id="refreshAuditButton" class="button button-secondary">Volver a revisar</button><button id="closeAuditButton" class="button button-quiet">Cerrar</button></div>
+        </div>
+        <p class="audit-scope">Revisa todos los eventos capturados, incluidos los que quedan fuera del informe oficial. Un cupo cero, cero inscritos y un dato sin leer se muestran por separado.</p>
+        <div id="auditMetrics" class="metrics audit-metrics"></div>
+        <p id="auditCoverage" class="audit-coverage"></p>
+        <div class="audit-filters">
+          <label>Nivel<select id="auditSeverity"><option value="review">Errores y advertencias</option><option value="all">Todos los niveles</option><option value="error">Errores</option><option value="warning">Advertencias</option><option value="info">Informativos</option></select></label>
+          <label>Tipo<select id="auditRule"><option value="all">Todos</option><option value="ZERO_CAPACITY">Cupo cero</option><option value="ZERO_ENROLLMENT">Sin inscritos</option><option value="OVER_CAPACITY">Sobre el cupo</option><option value="INCOMPLETE_DAY">Días incompletos</option><option value="TIME_ADJUSTED">Horarios ajustados</option><option value="TIME_REVIEW">Horarios por revisar</option><option value="EXCLUDED_FROM_REPORT">Fuera del informe</option><option value="PARTICIPANT_COUNT_MISMATCH">Diferencia en inscritos</option><option value="DETAIL_READ_FAILED">Detalle no leído</option></select></label>
+          <label>Buscar<input id="auditSearch" type="search" placeholder="Actividad, fecha, horario o motivo"></label>
+        </div>
+        <div class="table-wrap audit-table"><table>
+          <thead><tr><th>Nivel</th><th>Fecha / hora</th><th>Actividad</th><th>Inscritos</th><th>Cupo</th><th>Hallazgo y evidencia</th></tr></thead>
+          <tbody id="auditBody"></tbody>
+        </table></div>
+        <div class="audit-pagination"><span id="auditResultCount" role="status"></span><div class="button-row"><button id="auditPrevButton" class="button button-quiet">Anterior</button><button id="auditNextButton" class="button button-quiet">Siguiente</button></div></div>
+      </section>
+
+      <section id="scheduleCard" class="card hidden" aria-labelledby="scheduleTitle">
+        <div class="section-heading">
+          <div>
+            <p class="schedule-eyebrow">Inspector de Horarios</p>
+            <h2 id="scheduleTitle">Clases detectadas</h2>
+            <p id="scheduleLabel"></p>
+          </div>
+          <div class="button-row">
+            <button id="scheduleExcelButton" class="button button-secondary">Exportar Excel</button>
+            <button id="schedulePdfButton" class="button button-secondary">Exportar PDF</button>
+            <button id="closeScheduleButton" class="button button-quiet">Cerrar</button>
+          </div>
+        </div>
+        <div class="schedule-toolbar">
+          <label for="scheduleSearch"><input id="scheduleSearch" type="search" placeholder="Buscar actividad…"></label>
+          <div id="scheduleStats" class="schedule-stats"></div>
+        </div>
+        <div id="scheduleActivityPills" class="schedule-pills"></div>
+        <div id="scheduleTimetable" class="schedule-timetable-wrap"></div>
+      </section>
+
+      <section class="card batch-export-card">
+        <div class="section-heading">
+          <div>
+            <h2>Exportación masiva</h2>
+            <p id="defaultFolderDisplay">Sin carpeta predeterminada. Confígura una para habilitar la descarga.</p>
+          </div>
+          <div class="button-row">
+            <button id="setFolderButton" class="button button-secondary">Cambiar carpeta</button>
+            <button id="openFolderButton" class="button button-quiet" disabled>Abrir carpeta</button>
+            <button id="batchExportButton" class="button button-primary" disabled>Descargar todo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <h2>Dashboard interactivo</h2>
+            <p>Genera un informe HTML con gráficos comparativos, tablas y estadísticas. Se abre en el navegador y puede compartirse.</p>
+          </div>
+          <div class="button-row">
+            <button id="openDashboardButton" class="button button-secondary" disabled>📊 Abrir Dashboard</button>
+            <button id="openDashboardV2Button" class="button button-primary" disabled>📊 Generar Dashboard</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <h2>Extracciones guardadas</h2>
+            <p>Los resultados permanecen en la base local hasta que decidas eliminarlos manualmente.</p>
+          </div>
+          <div class="button-row">
+            <button id="openDataButton" class="button button-quiet">Abrir carpeta de datos</button>
+            <button id="deleteAllRunsButton" class="button button-danger">Eliminar todo el historial</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Rango</th>
+                <th>Estado</th>
+                <th>Eventos</th>
+                <th>Inscritos</th>
+                <th>Alertas</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="runsBody">
+              <tr><td colspan="7" class="empty">No hay extracciones guardadas.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

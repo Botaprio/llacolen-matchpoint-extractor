@@ -1,0 +1,56 @@
+{
+  "name": "llacolen-matchpoint-extractor",
+  "version": "1.0.18",
+  "description": "Extractor de ocupación e inscritos desde MatchPoint para Llacolén Campos Deportivos.",
+  "main": "src/main.js",
+  "author": "Llacolén Campos Deportivos",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/services/browser-session.js && node --check src/services/database.js && node --check src/services/official-report-exporter.js && node --check src/services/schedule-notes.js && node --check src/services/report-template.js && node --check src/services/extractor.js && node --check src/services/parallel-extractor.js && node --check src/services/data-audit.js && node --check src/services/date-utils.js && node --check src/services/parsers.js && node --check src/services/schedule-structure.js && node --check src/services/schedule-exporter.js && node --check src/services/dashboard-generator.js && node --check src/renderer/app.js",
+    "dist:win": "electron-builder --win portable nsis"
+  },
+  "dependencies": {
+    "playwright-core": "1.62.1",
+    "jszip": "3.10.1"
+  },
+  "devDependencies": {
+    "electron": "43.4.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "cl.llacolen.matchpoint.extractor",
+    "productName": "Llacolén MatchPoint Estadísticas",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

@@ -1,0 +1,25 @@
+LLACOLÉN MATCHPOINT ESTADÍSTICAS — V17 (1.0.17)
+
+Nueva versión basada en la V16 con correcciones de fechas y texto.
+
+1. Cierra el programa antes de actualizarlo.
+2. Copia el contenido de la carpeta Llacolen-MatchPoint-Estadisticas-v17 dentro de tu carpeta de proyecto actual, reemplazando los archivos y conservando node_modules.
+3. Ejecuta Actualizar-Ejecutable-Windows.bat.
+4. Abre el nuevo ejecutable que se genera en dist.
+5. Inicia sesión como antes. Elige el mes y el número de pestañas (de 1 a 31, con 4 por defecto).
+6. Usa Extraer mes para datos completos o Extracción rápida (cifras) para omitir el detalle de nombres.
+7. Abre Analizar Nuevo junto a Analizar para revisar cupos cero, diferencias y días incompletos.
+
+También puedes instalar desde una carpeta nueva con Crear-Ejecutable-Windows.bat.
+Los datos existentes permanecen en la carpeta de datos de la aplicación.
+
+Código fuente y scripts incluidos; el EXE debe generarse en Windows.
+44 pruebas automatizadas aprobadas. Pendiente de prueba en vivo con MatchPoint.
+Detalles y limitaciones en docs/CAMBIOS_V17.md y docs/VALIDACION_V17.json.
+
+AJUSTES DE HORARIO
+Se recuperan desfases de hasta 15 minutos si la asignación es clara y la clase no está contabilizada. La hora original se conserva.
+Los Excel afectados incluyen Observaciones de horario debajo de las estadísticas. Junto a los siete Excel se guarda Inconsistencias-horarios-AAAA-MM.txt.
+Analizar Nuevo permite filtrar Horarios ajustados y Horarios por revisar.
+Puedes volver a exportar una extracción anterior si ya contiene la clase desfasada y sus inscritos.
+Detalles: docs/AJUSTES_HORARIOS_V17.md.

@@ -1,0 +1,99 @@
+{
+  "version": "1.0.15",
+  "template_rows": 464,
+  "excel_files": {
+    "ACTIVIDADES DEPORTIVAS Lista.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 10,
+      "chart_count_after": 10,
+      "charts_cupos_asistentes": 10,
+      "chart_titles_updated": 10,
+      "formula_cells_checked": 255,
+      "formula_cells_correct": 255
+    },
+    "Actividades Fitness lista.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 20,
+      "chart_count_after": 20,
+      "charts_cupos_asistentes": 20,
+      "chart_titles_updated": 20,
+      "formula_cells_checked": 552,
+      "formula_cells_correct": 552
+    },
+    "Actividades Inclusivas lista.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 1,
+      "chart_count_after": 1,
+      "charts_cupos_asistentes": 1,
+      "chart_titles_updated": 1,
+      "formula_cells_checked": 51,
+      "formula_cells_correct": 51
+    },
+    "Actividades Menores lista.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 11,
+      "chart_count_after": 11,
+      "charts_cupos_asistentes": 11,
+      "chart_titles_updated": 11,
+      "formula_cells_checked": 273,
+      "formula_cells_correct": 273
+    },
+    "Escuela de Invierno.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 1,
+      "chart_count_after": 1,
+      "charts_cupos_asistentes": 1,
+      "chart_titles_updated": 1,
+      "formula_cells_checked": 60,
+      "formula_cells_correct": 60
+    },
+    "Otras Actividades LISTA.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 7,
+      "chart_count_after": 7,
+      "charts_cupos_asistentes": 7,
+      "chart_titles_updated": 7,
+      "formula_cells_checked": 81,
+      "formula_cells_correct": 81
+    },
+    "Piscina Temperada lista.xlsx": {
+      "opens_ok": true,
+      "same_sheet_names_and_order": true,
+      "chart_count_before": 3,
+      "chart_count_after": 3,
+      "charts_cupos_asistentes": 3,
+      "chart_titles_updated": 3,
+      "formula_cells_checked": 120,
+      "formula_cells_correct": 120
+    }
+  },
+  "tests": {
+    "node_tests_passed": 14,
+    "syntax_check_passed": true
+  },
+  "filter_test": {
+    "accepted_template_records": 464,
+    "excluded_invented_records": 1
+  },
+  "excel_summary": {
+    "chart_count": 53,
+    "charts_cupos_asistentes": 53,
+    "chart_titles_updated": 53,
+    "formula_cells_checked": 1392,
+    "formula_cells_correct": 1392
+  },
+  "powerpoint": {
+    "opens_as_zip_ok": true,
+    "slide_count": 62,
+    "chart_count": 54,
+    "charts_cupos_asistentes": 54,
+    "chart_titles_updated": 54
+  },
+  "overall_ok": true
+}

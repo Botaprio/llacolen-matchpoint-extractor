@@ -1,0 +1,30 @@
+{
+  "version": "v16",
+  "date": "2026-09-04",
+  "changes": [
+    "PowerPoint replaces the processed month/year in every visible slide paragraph, including split text runs such as 'J' + 'unio 2025'.",
+    "Chart titles use the processed month/year.",
+    "The extractor reuses an already-open reservation board between consecutive monthly extractions instead of invoking the board icon again.",
+    "The extractor waits briefly for the final MatchPoint postback to stabilize before returning completion.",
+    "Session detection accepts an already-open reservation board during transient ASP.NET postbacks."
+  ],
+  "automated_checks": {
+    "npm_run_check": "PASS",
+    "node_tests": {
+      "passed": 16,
+      "failed": 0
+    },
+    "catalog_rows": 464,
+    "generated_excels": 7,
+    "generated_ppt_slides": 62,
+    "generated_ppt_charts": 54,
+    "test_period": "Agosto 2026",
+    "visible_month_years_in_generated_slides_and_charts": [
+      "Agosto 2026"
+    ],
+    "visible_Junio_2025_remaining": false,
+    "zip_integrity": "PASS",
+    "office_xml_well_formed": "PASS"
+  },
+  "live_matchpoint_note": "The consecutive-month race-condition fix was unit-tested and targets the observed state transition, but a live MatchPoint session is not available in this environment, so the real website timing must be confirmed on the user's Windows installation."
+}

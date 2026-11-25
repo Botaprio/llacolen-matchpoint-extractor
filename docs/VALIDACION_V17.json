@@ -1,0 +1,49 @@
+{
+  "version": "1.0.17",
+  "date": "2026-09-10",
+  "base_zip_sha256": "bde4f0030f1d7bc62b065c254ef002f3670cae1ed158129f68535d036e8bfe4e",
+  "runtime": "Node.js v24.19.0 (Linux)",
+  "automated_checks": {
+    "tests_passed": 44,
+    "tests_failed": 0,
+    "syntax_files_checked": 13,
+    "migration_v16": "PASS",
+    "parallel_scheduling": "PASS",
+    "deduplication_and_retry": "PASS",
+    "cancellation": "PASS",
+    "zero_capacity_and_unknown_counts": "PASS",
+    "renderer_controller_and_ipc": "PASS",
+    "official_excel_count": 7,
+    "official_ppt_slides": 62,
+    "official_ppt_charts": 54,
+    "catalog_rows": 464,
+    "max_concurrency_tested": 31,
+    "range_day_counts_tested": [
+      31,
+      29,
+      1
+    ],
+    "time_adjustment_minutes": 15,
+    "schedule_reconciliation": "PASS",
+    "excel_schedule_notes": "PASS",
+    "schedule_txt": "PASS",
+    "schedule_notes_visual_preview": "PASS (Musculación, datos simulados)"
+  },
+  "preserved_byte_for_byte": [
+    "all Office template contents",
+    "template-catalog.json",
+    "date-utils.js",
+    "parsers.js"
+  ],
+  "not_executed": [
+    "live MatchPoint extraction",
+    "live speed benchmark",
+    "visual Electron validation",
+    "Windows EXE build/run",
+    "verification against actual March extraction data"
+  ],
+  "distribution": "source ZIP; build on Windows using included batch/PowerShell scripts",
+  "limitations": "Las pruebas del sitio e interfaz usan dobles controlados. La velocidad y el comportamiento de sesiones compartidas deben confirmarse con MatchPoint real.",
+  "revision": "V17: 31 pestañas, ajustes de horario hasta 15 minutos y registro Excel/TXT",
+  "default_concurrency": 4
+}

@@ -1,0 +1,97 @@
+ACTUALIZACIÓN VERSIÓN 18
+========================
+Llacolén MatchPoint Estadísticas — v1.0.18
+
+─────────────────────────────────────────────
+NUEVA FUNCIÓN: DASHBOARD PÚBLICO HTML
+─────────────────────────────────────────────
+
+Se incorporó un generador de dashboard interactivo (HTML autónomo) que se
+abre en el navegador predeterminado con el botón «📊 Abrir Dashboard»
+disponible en la sección «Dashboard interactivo» de la app.
+
+CARACTERÍSTICAS DEL DASHBOARD:
+  • Tabs de selección de período: un clic para cambiar el mes visualizado.
+  • Modo comparación: selecciona dos meses para compararlos en los gráficos.
+  • Año contra año (YoY): un clic compara automáticamente el mes actual
+    contra el mismo mes del año anterior.
+  • Tarjetas KPI: eventos totales, inscritos, cupos, clases y % de ocupación,
+    con indicadores de delta (±%) respecto al período de comparación.
+  • Gráfico de resumen por categoría: barras horizontales de inscritos y cupos
+    para Deportivas, Fitness, Menores, Piscina, etc.
+  • Gráfico de ocupación % por categoría: código de color verde/naranja/rojo.
+  • Gráfico de comparación directa: barras lado a lado de los dos períodos.
+  • Paneles por actividad expandibles: cada actividad despliega su gráfico
+    de franjas horarias (día + hora) con cupos e inscritos, igual que el
+    PowerPoint, más una tabla detallada con delta por franja.
+  • Tabla resumen completa: todas las actividades con % de ocupación,
+    agrupadas por categoría, con delta vs. período de comparación.
+  • El archivo HTML es autónomo y puede compartirse o abrirse sin la app.
+    Requiere conexión a internet para cargar Chart.js desde CDN.
+
+─────────────────────────────────────────────
+CORRECCIONES EN EL CATÁLOGO DE PLANTILLAS
+─────────────────────────────────────────────
+
+Se corrigieron cuatro asignaciones incorrectas en template-catalog.json
+que causaban que los gráficos del PowerPoint mostraran datos equivocados
+en el eje X y franjas horarias de actividades adultas en lugar de menores:
+
+  • Diapositiva 36 (Básquetbol Menores):
+    Antes: ACTIVIDADES DEPORTIVAS Lista.xlsx | Básquetbol | 0
+    Ahora: Actividades Menores lista.xlsx    | Básquetbol | 0
+
+  • Diapositiva 38 (Squash Menores):
+    Antes: ACTIVIDADES DEPORTIVAS Lista.xlsx | Squash | 0
+    Ahora: Actividades Menores lista.xlsx    | Squash | 0
+
+  • Diapositiva 39 (Tenis Menores):
+    Antes: ACTIVIDADES DEPORTIVAS Lista.xlsx | Tenis | 0
+    Ahora: Actividades Menores lista.xlsx    | Tenis | 0
+
+  • Diapositiva 51 (Natación Adultos):
+    Antes: Actividades Menores lista.xlsx    | Natación | 0
+    Ahora: Piscina Temperada lista.xlsx      | Clases de natación | 0
+
+─────────────────────────────────────────────
+CORRECCIÓN EN EL EJE X DEL POWERPOINT
+─────────────────────────────────────────────
+
+Se mejoró la función rebuildCatCache en official-report-exporter.js:
+
+  • Ahora preserva el formato multiLvlStrRef cuando la plantilla lo usaba,
+    emitiendo dos niveles (Día / Hora) en lugar de aplanarlos en una sola
+    etiqueta. Esto mantiene la visualización escalonada del eje X.
+  • Se eliminó el parche codificado manualmente para la actividad «Flow»
+    (ya no era necesario, pues rebuildCatCache reconstruye correctamente
+    las categorías desde el catálogo en todos los casos).
+  • La comprobación de rowStart usa «!= null» en lugar de evaluación booleana,
+    evitando un bug latente si alguna hoja comenzara en la fila 0.
+
+─────────────────────────────────────────────
+CAMBIOS TÉCNICOS INTERNOS
+─────────────────────────────────────────────
+
+  • Nuevo servicio: src/services/dashboard-generator.js
+    Funciones exportadas: buildRunStats(), generateDashboardHtml()
+
+  • main.js: nuevo handler IPC «dashboard:generate»
+    Genera el HTML, lo guarda en un archivo temporal y lo abre con
+    shell.openPath() en el navegador del sistema.
+
+  • preload.js: expone matchpointApp.generateDashboard(runIds?)
+
+  • index.html: nueva sección «Dashboard interactivo» con botón «📊 Abrir Dashboard»
+
+  • app.js: handler para el botón de dashboard; el botón se habilita
+    automáticamente cuando existen extracciones completadas.
+
+  • package.json: versión 1.0.18; dashboard-generator.js agregado al
+    script de verificación de sintaxis (npm run check).
+
+─────────────────────────────────────────────
+ESTADO DE PRUEBAS
+─────────────────────────────────────────────
+
+  44/44 tests pasando (0 fallos).
+  npm run check: sin errores de sintaxis.

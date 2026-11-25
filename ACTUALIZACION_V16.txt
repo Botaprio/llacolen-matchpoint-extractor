@@ -1,0 +1,16 @@
+ACTUALIZACIÓN v15 -> v16
+=======================
+
+1. Descomprime este ZIP sobre la carpeta del proyecto v15, aceptando reemplazar archivos.
+2. Conserva la carpeta node_modules si ya existe.
+3. Ejecuta Actualizar-Ejecutable-Windows.bat.
+
+CAMBIOS v16:
+- El PowerPoint sustituye el mes/año de la plantilla en TODAS las diapositivas, incluso cuando PowerPoint divide el texto en varios fragmentos internos (por ejemplo, "J" + "unio 2025").
+- Los títulos de gráficos siguen usando el mes/año procesado.
+- Al terminar una extracción se espera brevemente que MatchPoint quede estable.
+- Si el Cuadro de Reservas ya está abierto, la extracción siguiente lo reutiliza en vez de volver a invocar el botón de apertura.
+- La comprobación de sesión reconoce también un Cuadro de Reservas ya abierto durante los postbacks de MatchPoint.
+- El objetivo es poder procesar enero, febrero, marzo, etc. consecutivamente sin el error transitorio que obligaba a esperar y hacer clic de nuevo.
+
+No cambian las plantillas, el catálogo de 464 filas autorizadas ni la lógica de los 7 Excel/PDF.
