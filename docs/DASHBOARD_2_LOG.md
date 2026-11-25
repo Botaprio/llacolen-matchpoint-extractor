@@ -92,3 +92,23 @@ la presentación (especialmente en el slide de portada).
 
 ## VERSIÓN
 Versión 1.0.18 → este cambio corresponde a funcionalidades del Dashboard 2.0.
+
+## ACTUALIZACIÓN — Presentación v2 + fixes dashboard
+
+### Presentación rediseñada
+- **Pantalla de selección** al abrir: elige mes específico o rango
+- **Modo rango**: tendencia de inscripción, tendencia de ocupación (Chart.js líneas), comparación por categoría, resumen del rango
+- **Layout**: cada slide ocupa el 100% de la pantalla; headers compactos; lex:1 en el body
+- **Fuentes más grandes**: clamp() agresivo, KPIs con fuente hasta 4rem
+- **Logos**: aumentados a clamp(70px,10vh,120px) en portada
+- **Gráficos Chart.js**: category overview, category detail, trend lines, combo bar+line
+- **Animaciones**:
+  - Entrada del slide: 	ranslateX(100%) → 0 (siguiente), 	ranslateX(-110%) → 0 (anterior)
+  - Items en cascade: nim-stagger con delays escalonados
+  - Barras de ranking: animan desde 0
+  - Sección divider: fadeInUp + scaleIn por elemento
+  - Botón de inicio: glowPulse continuo
+
+### Dashboard — fix adicional
+- Rechaza ahora: (sin nombre), (actividad sin nombre), marat[oó]n, cuadrangular, competencia
+- "Clases no detectadas" → "**Clases eliminadas**" con descripción: "Estaban en [mes anterior] y ya no aparecen"
