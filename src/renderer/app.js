@@ -41,7 +41,7 @@ const elements = {
 for (const id of ['analysisAuditButton', 'auditCard', 'auditLabel', 'auditMetrics', 'auditCoverage',
   'auditSeverity', 'auditRule', 'auditSearch', 'auditBody', 'auditResultCount', 'refreshAuditButton',
   'closeAuditButton', 'auditPrevButton', 'auditNextButton',
-  'openDashboardButton', 'openDashboardV2Button']) elements[id] = document.getElementById(id);
+  'openDashboardButton', 'openDashboardV2Button', 'openPresentationButton']) elements[id] = document.getElementById(id);
 
 let authenticated = false;
 let running = false;
@@ -107,6 +107,7 @@ function updateButtons() {
   elements.batchExportButton.disabled = !defaultFolderPath || running;
   if (elements.openDashboardButton) elements.openDashboardButton.disabled = running;
   if (elements.openDashboardV2Button) elements.openDashboardV2Button.disabled = running;
+  if (elements.openPresentationButton) elements.openPresentationButton.disabled = running;
 }
 
 function setRunning(value) {
@@ -164,6 +165,7 @@ async function loadRuns() {
   const hasCompleted = runs.some((r) => r.status === 'completed' || r.status === 'partial');
   if (elements.openDashboardButton) elements.openDashboardButton.disabled = !hasCompleted || running;
   if (elements.openDashboardV2Button) elements.openDashboardV2Button.disabled = !hasCompleted || running;
+  if (elements.openPresentationButton) elements.openPresentationButton.disabled = !hasCompleted || running;
   if (!runs.length) {
     elements.runsBody.innerHTML = '<tr><td colspan="7" class="empty">No hay extracciones guardadas.</td></tr>';
     return;
@@ -500,6 +502,22 @@ if (elements.openDashboardV2Button) {
     } finally {
       elements.openDashboardV2Button.textContent = '📊 Generar Dashboard';
       elements.openDashboardV2Button.disabled = false;
+    }
+  });
+}
+
+if (elements.openPresentationButton) {
+  elements.openPresentationButton.addEventListener('click', async () => {
+    try {
+      elements.openPresentationButton.disabled = true;
+      elements.openPresentationButton.textContent = '⏳ Generando…';
+      const result = await window.matchpointApp.generatePresentation();
+      showToast(`Presentación generada con ${result.runCount} período(s). Se abrirá en el navegador.`);
+    } catch (error) {
+      showToast(error.message, true);
+    } finally {
+      elements.openPresentationButton.textContent = '🎯 Modo Presentación';
+      elements.openPresentationButton.disabled = false;
     }
   });
 }

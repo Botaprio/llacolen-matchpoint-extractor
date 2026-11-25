@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('matchpointApp', {
   openDataDirectory: () => ipcRenderer.invoke('data:open-directory'),
   generateDashboard: (runIds) => ipcRenderer.invoke('dashboard:generate', runIds),
   generateDashboardV2: (runIds) => ipcRenderer.invoke('dashboard:generate-v2', runIds),
+  generatePresentation: (runIds) => ipcRenderer.invoke('dashboard:generate-presentation', runIds),
   listAllRuns: () => ipcRenderer.invoke('runs:list-all'),
   onProgress: (callback) => {
     const handler = (_event, payload) => callback(payload);

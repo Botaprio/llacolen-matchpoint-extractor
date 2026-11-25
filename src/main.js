@@ -11,7 +11,7 @@ const { exportScheduleExcel, scheduleHtmlDoc } = require('./services/schedule-ex
 const { ParallelExtractor, validateConcurrency } = require('./services/parallel-extractor');
 const { auditRun } = require('./services/data-audit');
 const { enumerateDates } = require('./services/date-utils');
-const { buildRunStats, computeMonthlyClassChanges, generateDashboardHtml, generateDashboardHtmlV2 } = require('./services/dashboard-generator');
+const { buildRunStats, computeMonthlyClassChanges, generateDashboardHtml, generateDashboardHtmlV2, generatePresentationHtml } = require('./services/dashboard-generator');
 const fsp = require('node:fs/promises');
 
 let mainWindow;
@@ -324,6 +324,36 @@ function registerHandlers() {
     const html = generateDashboardHtmlV2(runsStats, logoBase64);
 
     const tmpPath = path.join(os.tmpdir(), `llacolen-dashboard-v2-${Date.now()}.html`);
+    fs.writeFileSync(tmpPath, html, 'utf8');
+    await shell.openPath(tmpPath);
+    return { filePath: tmpPath, runCount: runsStats.length };
+  });
+
+  ipcMain.handle('dashboard:generate-presentation', async (_event, runIds) => {
+    const fs = require('node:fs');
+    const os = require('node:os');
+
+    const allRuns = database.listRuns(100).filter((r) => r.status === 'completed' || r.status === 'partial');
+    const selected = runIds && runIds.length
+      ? allRuns.filter((r) => runIds.includes(r.id))
+      : allRuns;
+
+    if (!selected.length) throw new Error('No hay extracciones completadas para generar la presentación.');
+
+    const logoPath = path.join(__dirname, 'assets', 'logo-llacolen.jpg');
+    const logoBase64 = fs.existsSync(logoPath) ? fs.readFileSync(logoPath).toString('base64') : '';
+
+    const runsStats = selected.map((run) => {
+      try {
+        const runData = database.getRunData(run.id);
+        return buildRunStats(runData);
+      } catch { return null; }
+    }).filter(Boolean);
+
+    computeMonthlyClassChanges(runsStats);
+    const html = generatePresentationHtml(runsStats, logoBase64);
+
+    const tmpPath = path.join(os.tmpdir(), `llacolen-presentation-${Date.now()}.html`);
     fs.writeFileSync(tmpPath, html, 'utf8');
     await shell.openPath(tmpPath);
     return { filePath: tmpPath, runCount: runsStats.length };
